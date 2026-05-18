@@ -16,56 +16,90 @@ links.forEach(link => {
 
 
 // =========================
-// CARROSSEL
+// CARROSSEL COVERFLOW
 // =========================
 
-const images = document.querySelectorAll(".carousel-images img");
+const items =
+  document.querySelectorAll(".carousel-item");
 
-const nextBtn = document.querySelector(".next");
-const prevBtn = document.querySelector(".prev");
+const nextBtn =
+  document.querySelector(".next");
+
+const prevBtn =
+  document.querySelector(".prev");
 
 let current = 0;
 let interval;
 
 
-// Exibe imagem
-function showImage(index){
+// Atualiza posições
+function updateCarousel(direction = "next") {
 
-  images.forEach(img => {
-    img.classList.remove("active");
-  });
+    items.forEach(item => {
 
-  images[index].classList.add("active");
+        item.className =
+            "carousel-item";
+
+    });
+
+    const prev =
+        (current - 1 + items.length)
+        % items.length;
+
+    const next =
+        (current + 1)
+        % items.length;
+
+    items[current]
+        .classList.add("active");
+
+    items[prev]
+        .classList.add("left");
+
+    items[next]
+        .classList.add("right");
+
+    items.forEach((item, index) => {
+
+        if (
+            index !== current &&
+            index !== prev &&
+            index !== next
+        ) {
+
+            item.classList.add(
+                direction === "next"
+                    ? "hidden-right"
+                    : "hidden-left"
+            );
+        }
+    });
 }
 
 
-// Próxima imagem
+// Próxima
 function nextImage(){
 
-  current++;
+    current =
+        (current + 1)
+        % items.length;
 
-  if(current >= images.length){
-    current = 0;
-  }
-
-  showImage(current);
+    updateCarousel("next");
 }
 
 
-// Imagem anterior
+// Anterior
 function prevImage(){
 
-  current--;
+    current =
+        (current - 1 + items.length)
+        % items.length;
 
-  if(current < 0){
-    current = images.length - 1;
-  }
-
-  showImage(current);
+    updateCarousel("prev");
 }
 
 
-// Reinicia o temporizador
+// Reinicia timer
 function resetInterval(){
 
   clearInterval(interval);
@@ -79,26 +113,30 @@ function resetInterval(){
 }
 
 
-// Clique botão próximo
-nextBtn.addEventListener("click", () => {
+// Eventos
+nextBtn.addEventListener(
+  "click",
+  () => {
 
-  nextImage();
+    nextImage();
+    resetInterval();
 
-  resetInterval();
+  }
+);
 
-});
+prevBtn.addEventListener(
+  "click",
+  () => {
+
+    prevImage();
+    resetInterval();
+
+  }
+);
 
 
-// Clique botão anterior
-prevBtn.addEventListener("click", () => {
-
-  prevImage();
-
-  resetInterval();
-
-});
-
-// Inicia automático
+// Inicialização
+updateCarousel();
 resetInterval();
 
 window.addEventListener("load", () => {
