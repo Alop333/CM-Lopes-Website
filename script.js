@@ -36,10 +36,8 @@ let interval;
 function updateCarousel(direction = "next") {
 
     items.forEach(item => {
-
         item.className =
             "carousel-item";
-
     });
 
     const prev =
@@ -50,15 +48,28 @@ function updateCarousel(direction = "next") {
         (current + 1)
         % items.length;
 
+    const hiddenLeft =
+        (current - 2 + items.length)
+        % items.length;
+
+    const hiddenRight =
+        (current + 2)
+        % items.length;
+
+
+    // atual
     items[current]
         .classList.add("active");
 
+    // laterais
     items[prev]
         .classList.add("left");
 
     items[next]
         .classList.add("right");
 
+
+    // resto
     items.forEach((item, index) => {
 
         if (
@@ -68,12 +79,47 @@ function updateCarousel(direction = "next") {
         ) {
 
             item.classList.add(
-                direction === "next"
-                    ? "hidden-right"
-                    : "hidden-left"
+                index < current
+                ? "offscreen-left"
+                : "offscreen-right"
             );
         }
+
     });
+
+
+    // quem entra
+    if(direction === "next"){
+
+        items[hiddenRight]
+            .classList.remove(
+                "offscreen-right"
+            );
+
+        items[hiddenRight]
+            .offsetHeight;
+
+        items[hiddenRight]
+            .classList.add(
+                "incoming-right"
+            );
+    }
+
+    if(direction === "prev"){
+
+        items[hiddenLeft]
+            .classList.remove(
+                "offscreen-left"
+            );
+
+        items[hiddenLeft]
+            .offsetHeight;
+
+        items[hiddenLeft]
+            .classList.add(
+                "incoming-left"
+            );
+    }
 }
 
 
